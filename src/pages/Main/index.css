@@ -1,0 +1,115 @@
+.header {
+  height: 62px;
+  background-color: #2d2f33;
+  color: #fff;
+}
+
+.header-inner {
+  position: relative;
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.header-logo {
+  line-height: 62px;
+  display: inline-block;
+  cursor: pointer;
+  vertical-align: top;
+}
+
+.header-logo img {
+  width: 90px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.header-pic,
+.header-upload {
+  line-height: 20px;
+  display: inline-block;
+  padding-left: 10px;
+  margin-left: 14px;
+  margin-right: 10px;
+  position: relative;
+  font-size: 20px;
+  vertical-align: top;
+  font-weight: 600;
+  width: 80px;
+  text-align: center;
+}
+
+.header-img:hover {
+  background-color: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.header-img {
+  display: inline-block;
+  padding: 21px 0;
+  width: 82px;
+  height: 62px;
+  text-align: center;
+  vertical-align: top;
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  font-size: 19px;
+}
+
+.header-manage {
+  line-height: 20px;
+  display: inline-block;
+  padding-left: 10px;
+  margin-left: 22px;
+  margin-right: 10px;
+  position: relative;
+  font-size: 20px;
+  vertical-align: top;
+  font-weight: 600;
+  width: 80px;
+}
+
+.logout {
+  position: absolute;
+  right: 10px;
+  top: -12px;
+  margin-top: 30px;
+  margin-right: 80px;
+  vertical-align: middle;
+}
+
+.logout-img {
+  font-size: 23px;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+.drop {
+  display: none;
+  position: absolute;
+  background-color: #2d2f33;
+  min-width: 90px;
+  height: 70px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  padding: 10px 14px;
+}
+
+.exit {
+  margin-top: 5px;
+}
+
+.exit:hover {
+  cursor: pointer;
+  color: rgb(97, 218, 251);
+}
+
+.logout:hover .drop {
+  display: block;
+}
+
+.dialog {
+  margin-left: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}

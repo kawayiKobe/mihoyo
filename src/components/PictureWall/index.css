@@ -1,0 +1,49 @@
+.container {
+  width: 1100px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+}
+
+.card {
+  width: 25%;
+  padding: 0.75rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.card > img {
+  margin-bottom: 0.75rem;
+  border-radius: 100px;
+}
+
+.card-text {
+  font-size: 85%;
+}
+
+.show-pic {
+  display: flex;
+  justify-content: center;
+}
+
+.show-pic img {
+  width: auto;
+  overflow: hidden;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+}
+
+.ant-modal-title {
+  margin: auto 0;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  word-wrap: break-word;
+  text-align: center;
+}
