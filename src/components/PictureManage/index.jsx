@@ -62,7 +62,7 @@ function PictureManage() {
           <Button
               size="small"
           >
-            
+            拒绝
           </Button>
           <Popconfirm
               placement="bottomRight"
