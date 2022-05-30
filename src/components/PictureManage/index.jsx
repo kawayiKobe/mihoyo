@@ -7,7 +7,6 @@ import * as api from "../../services/api";
 function PictureManage() {
   const [dataSource, setDataSource] = useState([]); // eslint-disable-line no-unused-vars
   const [total, setTotal] = useState(Number);
-  // const [url,setUrl] = useState('');
   useEffect(() => {
     getPicture();
   }, []);
@@ -19,7 +18,6 @@ function PictureManage() {
       console.log("111");
       setDataSource(result.data.content);
       setTotal(result.data.total);
-      // setUrl(result.data.content.imgSrc)
     } else {
       console.log("222");
       message.error(result.data.message);
@@ -58,15 +56,13 @@ function PictureManage() {
         <div>
           <Button
               size="small"
-              style={{borderColor:'#5cb85c',backgroundColor:'#5cb85c',color:'#FFFFFF',margin:'0 5px 0 5px'}}
           >
-            审核通过
+            通过
           </Button>
           <Button
               size="small"
-              style={{borderColor:'#f0a339',backgroundColor:'#f0a339',color:'#FFFFFF',margin:'0 5px 0 5px'}}
           >
-            审核未通过
+            
           </Button>
           <Popconfirm
               placement="bottomRight"
@@ -77,8 +73,7 @@ function PictureManage() {
               <Button
                   type="danger"
                   size="small"
-                  style={{borderColor:'#cc0000',backgroundColor:'#cc0000',color:'#FFFFFF',margin:'0 5px 0 5px'}}
-              >
+                 >
                   删除
               </Button>
           </Popconfirm>
