@@ -19,7 +19,19 @@ export async function updatePwd(content) {
 }
 
 //上传
-export async function uploadPic(param){
-    let result = await axios.post('/api/uploadPic',param)
-    return result.data
+export async function uploadPic(content) {
+  let result = await axios.post("/api/uploadPic", content);
+  return result.data;
+}
+
+//添加图片
+export async function addPic(content) {
+  let result = await axios.post("/api/addPic", content);
+  return result.data;
+}
+
+//获取图片
+export async function getPicture() {
+  let result = await axios.get("/api/getPicture");
+  return result.data;
 }

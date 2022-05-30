@@ -93,8 +93,6 @@ function PcitureWall() {
     }
   }, [picIndex]);
 
-  // let picList = [];
-
   let arr1 = [],
     arr2 = [],
     arr3 = [],
@@ -108,34 +106,6 @@ function PcitureWall() {
     return arr.indexOf(res[0]);
   }
 
-  // function checkListLength() {
-  //   //判断picList_show是否已经加载全部图片
-  //   return this.picList.length === this.picArr.length
-  // }
-
-  // function checkScoll(e) {
-  //   lock = false
-  //   const check = checkScrollBottom(e.srcElement)
-  //   if (check) {
-  //     //如果达到底部，则判断数组
-  //     if (checkListLength()) {
-  //       hint_text = "已经到底了哦"
-  //     } else {
-  //       //达到底部，但数组还未加载完
-  //       hint_text = "加载中..."
-  //       setTimeout(() => {
-  //         lock = true
-  //         const length = this.picArr.length
-  //         picArr.concat(picList.slice(length, length + 1))
-  //       }, 300)
-  //     }
-  //   }
-  // }
-
-  // function checkScrollBottom(o) {
-  //   //判断滚动条是否已经滚动到底部
-  //   return o.scrollTop + o.clientHeight >= o.scrollHeight
-  // }
 
   picArr.forEach((item, index) => {
     let minIndex = getMinIndex(heightArr);

@@ -158,22 +158,53 @@ router.post("/updatePwd", async ctx => {
 
 router.post("/uploadPic", upload.single("file"), async ctx => {
   const file = ctx.request.files.file;
-  console.log(file);
+  // console.log(file);
   const fileName = "http://localhost:3000/imgs/" + path.basename(file.filepath);
   ctx.response.body = { stat: "ok", url: fileName, message: "上传成功！" };
 });
 
-router.post('/addPic', async function (ctx) {
-  const {} = ctx.request.body;
-  let sql = 'insert into picture(width, height, imgSrc , title) values ("' +
-  account +
-  '", "' +
-  pwd +
-  '", 2)'
-  await getData(sql);
-  let data = {
-    code:200,
-    message:'发表成功！'
-  };
-  ctx.response.body = {data}
+router.post("/addPic", async function (ctx) {
+  const { width, height, imgSrc, title, userId } = ctx.request.body;
+  const data = {};
+  console.log("11wode" + width, imgSrc);
+  let sql =
+    'insert into picture(width, height, imgSrc , title,userId) values ("' +
+    width +
+    '", "' +
+    height +
+    '", "' +
+    imgSrc +
+    '","' +
+    title +
+    '","' +
+    userId +
+    '")';
+  const judge = await getData(sql);
+  if (judge.length === 1) {
+    data.stat = "ok";
+    data.message = "添加成功！";
+  } else {
+    data.stat = "ok";
+    data.message = "添加失败！";
+  }
+  ctx.response.body = { data };
+});
+
+router.get("/getPicture", async function (ctx) {
+  const data = {};
+  let sql =
+    "select  U.account,P.* from picture as P left join user as U on P.userId = U.userId";
+  let res = await getData(sql);
+  if (res.length > 0) {
+    sql =
+      "select count(*) from (select  U.account,P.* from picture as P left join user as U on P.userId = U.userId) as total";
+    total = await getData(sql);
+    data.stat = "ok";
+    data.content = res;
+    data.total = total;
+  } else {
+    data.stat = "fail";
+    data.message = "没有查询到图片";
+  }
+  ctx.response.body = { data };
 });

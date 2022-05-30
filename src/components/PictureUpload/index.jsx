@@ -1,21 +1,51 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import "./index.css";
 import * as api from "../../services/api";
+import { message } from "antd";
 
 function PictureUpload() {
+  const history = useHistory();
+
   const [title, setTitle] = useState("");
+  const [imgUrl, setImgUrl] = useState("");
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+
   const uploadPic = async e => {
     let file = e.target.files[0];
     let param = new FormData();
     param.append("file", file);
     console.log("123ccr" + file);
-    //上传图片到服务端
     let res = await api.uploadPic(param);
-    console.log("cc" + res.stat);
+    let img = new Image();
+    console.log("url" + res.url);
+    img.src = res.url;
+    img.onload = function () {
+      setWidth(img.width);
+      setHeight(img.height);
+    };
     if (res.stat === "ok") {
-      console.log("url" + res.url);
+      setImgUrl(res.url);
     } else {
       return;
+    }
+  };
+
+  const addPic = async () => {
+    let res = await api.addPic({
+      width: width,
+      height: height,
+      imgSrc: imgUrl,
+      title: title,
+      userId: localStorage.getItem("userId")
+    });
+    console.log(res);
+    if (res.data.stat === "ok") {
+      message.success(`添加图片成功`);
+      history.push("/main/picture-wall");
+    } else {
+      message.error(res.data.message);
     }
   };
   return (
@@ -43,7 +73,9 @@ function PictureUpload() {
             </label>
           </div>
         </div>
-        <button className="publish">发布</button>
+        <button className="publish" onClick={addPic}>
+          发布
+        </button>
       </div>
     </div>
   );
