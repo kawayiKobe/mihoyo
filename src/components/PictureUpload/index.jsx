@@ -8,7 +8,6 @@ function PictureUpload() {
   const history = useHistory();
 
   const [title, setTitle] = useState("");
-  const [imgUrl, setImgUrl] = useState("");
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
@@ -26,7 +25,8 @@ function PictureUpload() {
       setHeight(img.height);
     };
     if (res.stat === "ok") {
-      setImgUrl(res.url);
+      localStorage.setItem("imgUrl", res.url);
+      message.success(res.message);
     } else {
       return;
     }
@@ -36,9 +36,9 @@ function PictureUpload() {
     let res = await api.addPic({
       width: width,
       height: height,
-      imgSrc: imgUrl,
+      imgSrc: localStorage.getItem("imgUrl"),
       title: title,
-      userId: localStorage.getItem("userId")
+      userId: localStorage.getItem("userId"),
     });
     console.log(res);
     if (res.data.stat === "ok") {

@@ -72,10 +72,10 @@ function Main() {
         <div className="logout">
           <ExportOutlined className="logout-img" />
           <div className="drop">
-            <div className="exit" onClick={showDialog}>
+            <div className="margin-top-5" onClick={showDialog}>
               修改密码
             </div>
-            <div className="exit" onClick={logout}>
+            <div className="margin-top-5" onClick={logout}>
               退出登录
             </div>
           </div>

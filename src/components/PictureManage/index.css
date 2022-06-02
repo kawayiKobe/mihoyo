@@ -3,11 +3,23 @@
   margin: 0 auto;
 }
 
-img{  
-  cursor: pointer;  
-  transition: all 0.6s;  
-} 
+.manage-img {
+  cursor: pointer;
+  transition: all 0.6s;
+}
 
-img:hover {
-  transform: scale(1.6);   
+.manage-img:hover {
+  transform: scale(1.6);
+}
+
+.pass {
+  margin: 0px 5px;
+}
+
+.reject {
+  margin: 0px 5px;
+}
+
+.delete {
+  margin: 0px 5px;
 }

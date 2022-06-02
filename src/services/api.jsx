@@ -35,3 +35,18 @@ export async function getPicture() {
   let result = await axios.get("/api/getPicture");
   return result.data;
 }
+
+export async function getPictureByState() {
+  let result = await axios.get("/api/getPictureByState");
+  return result.data;
+}
+
+export async function deletePic(content) {
+  let result = await axios.post("/api/deletePic",content);
+  return result.data;
+}
+
+export async function updatePic(content) {
+  let result = await axios.post("/api/updatePic",content);
+  return result.data;
+}

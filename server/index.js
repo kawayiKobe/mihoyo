@@ -13,7 +13,7 @@ const mysql = require("mysql");
 const { ConsoleSqlOutlined } = require("@ant-design/icons");
 
 const connection = mysql.createConnection({
-  host: "localhost",
+  host: "localhost",  
   user: "root",
   password: "123456",
   port: "3306",
@@ -166,9 +166,8 @@ router.post("/uploadPic", upload.single("file"), async ctx => {
 router.post("/addPic", async function (ctx) {
   const { width, height, imgSrc, title, userId } = ctx.request.body;
   const data = {};
-  console.log("11wode" + width, imgSrc);
   let sql =
-    'insert into picture(width, height, imgSrc , title,userId) values ("' +
+    'insert into picture(width, height, imgSrc , title, picState , userId) values ("' +
     width +
     '", "' +
     height +
@@ -176,7 +175,7 @@ router.post("/addPic", async function (ctx) {
     imgSrc +
     '","' +
     title +
-    '","' +
+    '",0,"' +
     userId +
     '")';
   const judge = await getData(sql);
@@ -204,7 +203,50 @@ router.get("/getPicture", async function (ctx) {
     data.total = total;
   } else {
     data.stat = "fail";
-    data.message = "没有查询到图片";
+    data.message = "没有查询到图片！";
   }
+  ctx.response.body = { data };
+});
+
+router.get("/getPictureByState", async function (ctx) {
+  const data = {};
+  let sql =
+    "select  U.account,P.* from picture as P left join user as U on P.userId = U.userId where P.picState = 1";
+  let res = await getData(sql);
+  if (res.length > 0) {
+    data.stat = "ok";
+    data.content = res;
+  } else {
+    data.stat = "fail";
+    data.message = "没有通过审核的图片！";
+  }
+  ctx.response.body = { data };
+});
+
+router.post("/deletePic", async function (ctx) {
+  const { picId } = ctx.request.body;
+  console.log('picid'+picId)
+  const sql = 'delete from picture where picId = "' + picId + '" ';
+  const res = await getData(sql);
+  const data = {
+    stat: "ok",
+    message: "删除成功！",
+  };
+  ctx.response.body = { data };
+});
+
+router.post("/updatePic", async function (ctx) {
+  const { picState, picId } = ctx.request.body;
+  const sql =
+    'update picture set picState = "' +
+    picState +
+    '" where picId = "' +
+    picId +
+    '" ';
+  const res = await getData(sql);
+  const data = {
+    stat: "ok",
+    message: "修改成功！",
+  };
   ctx.response.body = { data };
 });

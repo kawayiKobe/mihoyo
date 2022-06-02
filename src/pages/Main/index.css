@@ -94,11 +94,11 @@
   padding: 10px 14px;
 }
 
-.exit {
+.margin-top-5 {
   margin-top: 5px;
 }
 
-.exit:hover {
+.margin-top-5:hover {
   cursor: pointer;
   color: rgb(97, 218, 251);
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Table, message,Button,Popconfirm } from "antd";
+import { Card, Table, message, Button, Popconfirm } from "antd";
 import { useState, useEffect } from "react";
 import "./index.css";
 import * as api from "../../services/api";
@@ -7,20 +7,44 @@ import * as api from "../../services/api";
 function PictureManage() {
   const [dataSource, setDataSource] = useState([]); // eslint-disable-line no-unused-vars
   const [total, setTotal] = useState(Number);
+
   useEffect(() => {
     getPicture();
   }, []);
 
   const getPicture = async () => {
     let result = await api.getPicture();
-    console.log("cc" + result.data.content);
+    console.log("info" + result.data.content[0]);
     if (result.data.stat === "ok") {
-      console.log("111");
       setDataSource(result.data.content);
       setTotal(result.data.total);
     } else {
-      console.log("222");
       message.error(result.data.message);
+    }
+  };
+
+  const deletePic = async content => {
+    // const res = dataSource.find(item => {
+    //   return item.picId === content;
+    // });
+    // console.log("resu" + res.picId);
+    const result = await api.deletePic(content);
+    console.log("cc123" + result.data);
+    if (result.data.stat === "ok") {
+      console.log("ok");
+      message.success(result.data.message);
+      getPicture();
+    } else {
+      message.error("删除失败！");
+    }
+  };
+
+  const updatePic = async content => {
+    const result = await api.updatePic(content);
+    if (result.data.stat === "ok") {
+      message.success(result.data.message);
+    } else {
+      message.error("修改失败！");
     }
   };
 
@@ -38,7 +62,11 @@ function PictureManage() {
       width: 150,
       align: "center",
       render: url => (
-        <img src={url} style={{ width: "80px", height: "50px" }}></img>
+        <img
+          className="manage-img"
+          src={url}
+          style={{ width: "80px", height: "50px" }}
+        ></img>
       ),
     },
     {
@@ -49,33 +77,37 @@ function PictureManage() {
     },
     {
       title: "操作",
-      dataIndex: "_id",
+      dataIndex: "picId",
       width: 200,
       align: "center",
-      render: () => (
+      render: picId => (
         <div>
           <Button
-              size="small"
+            size="small"
+            type="primary"
+            className="pass"
+            onClick={() => updatePic({ picState: 1, picId: picId })}
           >
             通过
           </Button>
           <Button
-              size="small"
+            size="small"
+            type="ghost"
+            className="reject"
+            onClick={() => updatePic({ picState: 2, picId: picId })}
           >
             拒绝
           </Button>
           <Popconfirm
-              placement="bottomRight"
-              title="确认删除吗？"
-              okText="确定"
-              cancelText="取消"
+            placement="bottomRight"
+            title="确认删除吗？"
+            onConfirm={() => deletePic({ picId: picId })}
+            okText="确定"
+            cancelText="取消"
           >
-              <Button
-                  type="danger"
-                  size="small"
-                 >
-                  删除
-              </Button>
+            <Button size="small" type="danger" className="delete">
+              删除
+            </Button>
           </Popconfirm>
         </div>
       ),
