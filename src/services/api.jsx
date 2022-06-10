@@ -12,6 +12,12 @@ export async function login(user) {
   return result.data;
 }
 
+//登出
+export async function logout() {
+  let result = await axios.post("/api/logout");
+  return result.data;
+}
+
 //修改密码
 export async function updatePwd(content) {
   const result = await axios.post("/api/updatePwd", content);
@@ -36,17 +42,26 @@ export async function getPicture() {
   return result.data;
 }
 
+//根据图片状态获取
 export async function getPictureByState() {
   let result = await axios.get("/api/getPictureByState");
   return result.data;
 }
 
+//删除图片
 export async function deletePic(content) {
-  let result = await axios.post("/api/deletePic",content);
+  let result = await axios.post("/api/deletePic", content);
   return result.data;
 }
 
-export async function updatePic(content) {
-  let result = await axios.post("/api/updatePic",content);
+//更新审核状态
+export async function updateCheckState(content) {
+  let result = await axios.post("/api/updateCheckState", content);
+  return result.data;
+}
+
+//更新置顶状态
+export async function updateType(content) {
+  let result = await axios.post("/api/updateType", content);
   return result.data;
 }

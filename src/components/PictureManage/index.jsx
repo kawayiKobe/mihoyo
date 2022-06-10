@@ -1,12 +1,13 @@
-import React from "react";
+import { React, useState, useEffect } from "react";
 import { Card, Table, message, Button, Popconfirm } from "antd";
-import { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import "./index.css";
 import * as api from "../../services/api";
 
 function PictureManage() {
   const [dataSource, setDataSource] = useState([]); // eslint-disable-line no-unused-vars
   const [total, setTotal] = useState(Number);
+  const history = useHistory();
 
   useEffect(() => {
     getPicture();
@@ -14,35 +15,46 @@ function PictureManage() {
 
   const getPicture = async () => {
     let result = await api.getPicture();
-    console.log("info" + result.data.content[0]);
     if (result.data.stat === "ok") {
       setDataSource(result.data.content);
       setTotal(result.data.total);
+    } else if (result.data.stat === "Token_Not_Found") {
+      history.replace("/login");
     } else {
       message.error(result.data.message);
     }
   };
 
   const deletePic = async content => {
-    // const res = dataSource.find(item => {
-    //   return item.picId === content;
-    // });
-    // console.log("resu" + res.picId);
     const result = await api.deletePic(content);
-    console.log("cc123" + result.data);
     if (result.data.stat === "ok") {
-      console.log("ok");
       message.success(result.data.message);
       getPicture();
+    } else if (result.data.stat === "Token_Not_Found") {
+      history.replace("/login");
     } else {
       message.error("删除失败！");
     }
   };
 
-  const updatePic = async content => {
-    const result = await api.updatePic(content);
+  const updateCheckState = async content => {
+    const result = await api.updateCheckState(content);
     if (result.data.stat === "ok") {
       message.success(result.data.message);
+    } else if (result.data.stat === "Token_Not_Found") {
+      history.replace("/login");
+    } else {
+      message.error("修改失败！");
+    }
+  };
+
+  const updateType = async content => {
+    const result = await api.updateType(content);
+    if (result.data.stat === "ok") {
+      message.success(result.data.message);
+      getPicture();
+    } else if (result.stat === "Token_Not_Found") {
+      history.replace("/login");
     } else {
       message.error("修改失败！");
     }
@@ -86,7 +98,7 @@ function PictureManage() {
             size="small"
             type="primary"
             className="pass"
-            onClick={() => updatePic({ picState: 1, picId: picId })}
+            onClick={() => updateCheckState({ picState: 1, picId: picId })}
           >
             通过
           </Button>
@@ -94,9 +106,17 @@ function PictureManage() {
             size="small"
             type="ghost"
             className="reject"
-            onClick={() => updatePic({ picState: 2, picId: picId })}
+            onClick={() => updateCheckState({ picState: 2, picId: picId })}
           >
             拒绝
+          </Button>
+          <Button
+            size="small"
+            type="ghost"
+            className="reject"
+            onClick={() => updateType({ isTop: 0, picId: picId })}
+          >
+            置顶
           </Button>
           <Popconfirm
             placement="bottomRight"

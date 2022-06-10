@@ -15,10 +15,8 @@ function PictureUpload() {
     let file = e.target.files[0];
     let param = new FormData();
     param.append("file", file);
-    console.log("123ccr" + file);
     let res = await api.uploadPic(param);
     let img = new Image();
-    console.log("url" + res.url);
     img.src = res.url;
     img.onload = function () {
       setWidth(img.width);
@@ -33,19 +31,20 @@ function PictureUpload() {
   };
 
   const addPic = async () => {
-    let res = await api.addPic({
+    let result = await api.addPic({
       width: width,
       height: height,
       imgSrc: localStorage.getItem("imgUrl"),
       title: title,
       userId: localStorage.getItem("userId"),
     });
-    console.log(res);
-    if (res.data.stat === "ok") {
+    if (result.data.stat === "ok") {
       message.success(`添加图片成功`);
       history.push("/main/picture-wall");
+    } else if (result.data.stat === "Token_Not_Found") {
+      history.replace("/login");
     } else {
-      message.error(res.data.message);
+      message.error(result.data.message);
     }
   };
   return (

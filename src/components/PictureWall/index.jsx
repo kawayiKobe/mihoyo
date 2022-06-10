@@ -1,8 +1,9 @@
 import React from "react";
 import "./index.css";
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import Modal from "antd/lib/modal/Modal";
-import { Button, message } from "antd";
+import { Button } from "antd";
 import { RightOutlined, LeftOutlined } from "@ant-design/icons";
 import * as api from "../../services/api";
 
@@ -87,29 +88,32 @@ function PcitureWall() {
   const [isShowPic, setIsShowPic] = useState(false);
   const [picIndex, setPicIndex] = useState(0);
   const [showPic, setShowPic] = useState("");
-  let [dataSource, setDataSource] = useState([]);
-
-  useEffect(() => {
-    if (picArr.length > 0) {
-      setShowPic(picArr[picIndex].imgSrc);
-    }
-  }, [picIndex]);
+  const [dataSource, setDataSource] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     getPictureByState();
   }, []);
 
+  useEffect(() => {
+    if (dataSource.length > 0) {
+      setShowPic(dataSource[picIndex].imgSrc);
+    }
+  }, [picIndex]);
+
   const getPictureByState = async () => {
-    let newRes = []
-    let result = await api.getPictureByState();
-    console.log("xianshi" + result.data);
+    let newRes = [];
+    const result = await api.getPictureByState();
     if (result.data.stat === "ok") {
-      newRes = result.data.content
-    } 
+      newRes = result.data.content;
+    } else if (result.data.stat === "Token_Not_Found") {
+      console.log('12345dfs')
+      history.replace("/login");
+    }
     setDataSource([...newRes]);
   };
 
-  const [arr1,arr2,arr3,arr4] = [[],[],[],[]];
+  const [arr1, arr2, arr3, arr4] = [[], [], [], []];
   let heightArr = [0, 0, 0, 0];
 
   //获取高度数组中最小值所在下标
@@ -119,13 +123,9 @@ function PcitureWall() {
     return arr.indexOf(res[0]);
   }
 
-  dataSource.forEach((item) => {
+  dataSource.forEach(item => {
     let minIndex = getMinIndex(heightArr);
-    let img = new Image();
-    img.src = item.imgSrc;
-
-    // item.title = index;
-    heightArr[minIndex] += img.height / img.width; //进行缩放
+    heightArr[minIndex] += item.height / item.width; //进行缩放
     if (minIndex === 0) {
       arr1.push(item);
     } else if (minIndex === 1) {
@@ -140,7 +140,8 @@ function PcitureWall() {
   //点击图片显示图层
   function clickPic(item) {
     setIsShowPic(true);
-    setPicIndex(picArr.indexOf(item));
+    setShowPic(dataSource[picIndex].imgSrc);
+    setPicIndex(dataSource.indexOf(item));
   }
 
   //取消操作(让图片不显示)
@@ -150,7 +151,7 @@ function PcitureWall() {
 
   //上一张下一张切换图片后获取索引值
   function changePic(item) {
-    setPicIndex((picIndex + item + picArr.length) % picArr.length);
+    setPicIndex((picIndex + item + dataSource.length) % dataSource.length);
   }
   return (
     <div className="container">

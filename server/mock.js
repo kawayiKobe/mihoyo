@@ -7,19 +7,11 @@ const Router = require("koa-router");
 const multer = require("koa-multer");
 const path = require("path");
 const router = new Router();
-const mysql = require("mysql");
 const jwt = require("jsonwebtoken");
 const { ConsoleSqlOutlined } = require("@ant-design/icons");
-
-
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "123456",
-  port: "3306",
-  database: "mihoyo",
-});
-connection.connect();
+const pictureJson = require("./picture.json");
+const userJson = require("./user.json");
+const fs = require("fs");
 
 var storage = multer.diskStorage({
   destination: path.join(__dirname, "../public/imgs"),
@@ -61,18 +53,6 @@ app.listen("3200", () => {
   console.log("success");
 });
 
-function getData(sql) {
-  return new Promise(function (resolve, reject) {
-    connection.query(sql, function (err, result) {
-      if (err) {
-        console.log("[error]", err.message);
-        return;
-      }
-      resolve(JSON.parse(JSON.stringify(result)));
-    });
-  });
-}
-
 router.prefix("/api");
 
 //注册
@@ -84,16 +64,27 @@ router.post("/registry", async ctx => {
   });
   ctx.cookies.set("token", token.toString());
   const data = {};
-  let sql = 'select * from user where account = "' + account + '"';
-  const res = await getData(sql);
-  if (res.length === 0) {
-    sql =
-      'insert into user(account, pwd, userFlag) values ("' +
-      account +
-      '", "' +
-      pwd +
-      '", 2)';
-    await getData(sql);
+  const res = userJson.RECORDS.find(item => item.account === account);
+  if (!res) {
+    fs.readFile("./user.json", function (err, data) {
+      if (err) {
+        return;
+      }
+      let user = data.toString();
+      user = JSON.parse(user);
+      user.RECORDS.push({
+        userId: userJson.RECORDS.length + 1,
+        account: account,
+        pwd: pwd,
+        userFlag: "2",
+      });
+      let str = JSON.stringify(user);
+      fs.writeFile("./user.json", str, function (err) {
+        if (err) {
+          return;
+        }
+      });
+    });
     data.stat = "ok";
     data.message = "注册成功";
   } else {
@@ -112,24 +103,19 @@ router.post("/login", async ctx => {
   });
   ctx.cookies.set("token", token.toString());
   const data = {};
-  const sql =
-    'select * from user where account = "' +
-    account +
-    '" and pwd = "' +
-    pwd +
-    '" ';
-  const res = await getData(sql);
-  if (res.length === 1) {
+  const res = userJson.RECORDS.find(
+    item => item.account === account && item.pwd === pwd
+  );
+  console.log(res);
+  if (res) {
     data.stat = "ok";
-    data.userId = res[0].userId;
-    data.account = res[0].account;
-    data.userFlag = res[0].userFlag;
+    data.userId = res.userId;
+    data.account = res.account;
+    data.userFlag = res.userFlag;
     data.message = "登录成功";
   } else {
-    const judge = await getData(
-      'select * from user where account = "' + account + '"'
-    );
-    if (judge.length === 1) {
+    const judge = userJson.RECORDS.find(item => item.account === account);
+    if (judge) {
       data.stat = "errorPwd";
       data.message = "密码错误，请输入正确的密码";
     } else {
@@ -158,25 +144,32 @@ router.post("/updatePwd", async ctx => {
   const token = ctx.cookies.get("token");
   const { userId, oldPwd, newPwd } = ctx.request.body;
   const data = {};
-  let sql =
-    'select * from user where userId = "' +
-    userId +
-    '" and pwd = "' +
-    oldPwd +
-    '"';
-  let res = await getData(sql);
+  const res = userJson.RECORDS.find(
+    item => item.userId === userId && item.pwd === oldPwd
+  );
+  console.log(res);
   if (token) {
-    if (res.length !== 1) {
+    if (!res) {
       data.stat = "errPwd";
       data.message = "原密码输入错误";
     } else {
-      sql =
-        'update user set pwd = "' +
-        newPwd +
-        '" where userId = "' +
-        userId +
-        '" ';
-      res = await getData(sql);
+      fs.readFile("./user.json", function (err, data) {
+        if (err) {
+          return;
+        }
+        let user = data.toString();
+        user = JSON.parse(user);
+        user.RECORDS.array.forEach(item => {
+          const select = user.find(item => item.id === userId);
+          console.log(select);
+        });
+        let str = JSON.stringify(user);
+        fs.writeFile("./user.json", str, function (err) {
+          if (err) {
+            return;
+          }
+        });
+      });
       data.stat = "ok";
       data.message = "修改密码成功";
       ctx.cookies.set("token", "");
@@ -200,29 +193,39 @@ router.post("/addPic", async function (ctx) {
   const now = new Date().getTime();
   const { width, height, imgSrc, title, userId } = ctx.request.body;
   const data = {};
-  let sql =
-    'insert into picture(width, height, imgSrc , title, picState , isTop, userId,time) values ("' +
-    width +
-    '", "' +
-    height +
-    '", "' +
-    imgSrc +
-    '","' +
-    title +
-    '",0,1,"' +
-    userId +
-    '","' +
-    now +
-    '")';
-  const judge = await getData(sql);
+
   if (token) {
-    if (judge.length === 1) {
-      data.stat = "ok";
-      data.message = "添加成功！";
-    } else {
-      data.stat = "fail";
-      data.message = "添加失败！";
-    }
+    fs.readFile("./picture.json", function (err, data) {
+      if (err) {
+        return;
+      }
+      let pic = data.toString();
+      pic = JSON.parse(pic);
+      pic.RECORDS.push({
+        picId: pictureJson.RECORDS.length + 1,
+        width: width,
+        height: height,
+        imgSrc: imgSrc,
+        title: title,
+        picState: 0,
+        isTop: 1,
+        time: now,
+        userId: userId,
+      });
+      let str = JSON.stringify(pic);
+      fs.writeFile("./picture.json", str, function (err) {
+        if (err) {
+          return;
+        }
+      });
+      if (str) {
+        data.stat = "ok";
+        data.message = "添加成功！";
+      } else {
+        data.stat = "fail";
+        data.message = "添加失败！";
+      }
+    });
   } else {
     data.stat = "Token_Not_Found";
   }
@@ -233,12 +236,15 @@ router.post("/addPic", async function (ctx) {
 router.get("/getPicture", async function (ctx) {
   const token = ctx.cookies.get("token");
   const data = {};
-
-  let sql =
-    "select  U.account,P.* from picture as P left join user as U on P.userId = U.userId order by P.isTop,time desc ";
-  let res = await getData(sql);
+  pictureJson.RECORDS.sort((a, b) => a.picState - b.picState);
+  pictureJson.RECORDS.forEach(item => {
+    const findAccount = userJson.RECORDS.find(
+      content => content.userId === item.userId
+    );
+    item.account = findAccount.account;
+  });
   if (token) {
-    if (res.length > 0) {
+    if (pictureJson.RECORDS.length > 0) {
       sql =
         "select count(*) from (select  U.account,P.* from picture as P left join user as U on P.userId = U.userId) as total";
       const total = await getData(sql);

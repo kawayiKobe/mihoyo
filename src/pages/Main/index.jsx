@@ -13,11 +13,18 @@ function Main() {
   const [oldPwd, setOldPwd] = useState("");
   const [newPwd, setNewPwd] = useState("");
   const history = useHistory();
+
   const logout = async () => {
-    localStorage.removeItem("userId");
-    localStorage.removeItem("account");
-    localStorage.removeItem("userFlag");
-    history.push("/login");
+    const result = await api.logout();
+    if (result.data.stat === "ok") {
+      message.success(`退出成功`);
+      localStorage.removeItem("userId");
+      localStorage.removeItem("account");
+      localStorage.removeItem("userFlag");
+      history.replace("/login");
+    } else if (result.data.stat === "Token_Not_Found") {
+      history.replace("/login");
+    }
   };
 
   const updatePwd = async () => {
@@ -26,10 +33,11 @@ function Main() {
       oldPwd: oldPwd,
       newPwd: newPwd,
     });
-    console.log("sss" + result.data);
-    if (result.data.stat === "success") {
+    if (result.data.stat === "ok") {
       message.success(`修改密码成功`);
-      history.push("/login");
+      history.replace("/login");
+    } else if (result.data.stat === "Token_Not_Found") {
+      history.replace("/login");
     } else {
       message.error(result.data.message);
     }
@@ -63,11 +71,15 @@ function Main() {
               图片上传
             </Link>
           </div>
-          <div className="header-manage">
-            <Link className="header-img" to="/main/picture-manage">
-              图片管理
-            </Link>
-          </div>
+          {localStorage.getItem("userFlag") === "1" ? (
+            <div className="header-manage">
+              <Link className="header-img" to="/main/picture-manage">
+                图片管理
+              </Link>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
         <div className="logout">
           <ExportOutlined className="logout-img" />
