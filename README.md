@@ -2,7 +2,9 @@
 1. npm install 下载依赖
 2. npm start 启动运行
 
-
+### 账户密码
+- 管理员：admin  密码：123
+- 用户：user  密码：123
 
 ## 服务端
 1. cd /sever 进入sever文件夹
@@ -15,6 +17,8 @@
 3. password: "123456"（密码）
 4. port: "3306"（端口号）
 5. database: "mihoyo"（数据库名）
+
+
 
 
 

@@ -15,7 +15,9 @@ function PictureManage() {
 
   const getPicture = async () => {
     let result = await api.getPicture();
+    console.log('ccc'+result.data.content[0].account)
     if (result.data.stat === "ok") {
+      console.log('chenchu')
       setDataSource(result.data.content);
       setTotal(result.data.total);
     } else if (result.data.stat === "Token_Not_Found") {

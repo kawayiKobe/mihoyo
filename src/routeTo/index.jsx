@@ -10,7 +10,7 @@ function RouteTo() {
       <Route path="/main/picture-wall" component={PcitureWall} />
       <Route path="/main/picture-upload" component={PictureUpload} />
       <Route path="/main/picture-manage" component={PictureManage} />
-      <Redirect to="/main/pictur-wall" />
+      <Redirect to="/main/picture-wall" />
     </Switch>
   );
 }

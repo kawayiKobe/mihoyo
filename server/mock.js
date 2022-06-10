@@ -66,24 +66,19 @@ router.post("/registry", async ctx => {
   const data = {};
   const res = userJson.RECORDS.find(item => item.account === account);
   if (!res) {
-    fs.readFile("./user.json", function (err, data) {
+    let user = data.toString();
+    user = JSON.parse(user);
+    user.RECORDS.push({
+      userId: userJson.RECORDS[userJson.RECORDS.lenght - 1].userId + 1,
+      account: account,
+      pwd: pwd,
+      userFlag: "2",
+    });
+    let str = JSON.stringify(user);
+    fs.writeFile("./user.json", str, function (err) {
       if (err) {
         return;
       }
-      let user = data.toString();
-      user = JSON.parse(user);
-      user.RECORDS.push({
-        userId: userJson.RECORDS.length + 1,
-        account: account,
-        pwd: pwd,
-        userFlag: "2",
-      });
-      let str = JSON.stringify(user);
-      fs.writeFile("./user.json", str, function (err) {
-        if (err) {
-          return;
-        }
-      });
     });
     data.stat = "ok";
     data.message = "注册成功";
@@ -145,30 +140,18 @@ router.post("/updatePwd", async ctx => {
   const { userId, oldPwd, newPwd } = ctx.request.body;
   const data = {};
   const res = userJson.RECORDS.find(
-    item => item.userId === userId && item.pwd === oldPwd
+    item => item.userId === Number(userId) && item.pwd === oldPwd
   );
-  console.log(res);
   if (token) {
     if (!res) {
       data.stat = "errPwd";
       data.message = "原密码输入错误";
     } else {
-      fs.readFile("./user.json", function (err, data) {
+      res.pwd = newPwd;
+      fs.writeFile("./user.json", JSON.stringify(userJson), function (err) {
         if (err) {
           return;
         }
-        let user = data.toString();
-        user = JSON.parse(user);
-        user.RECORDS.array.forEach(item => {
-          const select = user.find(item => item.id === userId);
-          console.log(select);
-        });
-        let str = JSON.stringify(user);
-        fs.writeFile("./user.json", str, function (err) {
-          if (err) {
-            return;
-          }
-        });
       });
       data.stat = "ok";
       data.message = "修改密码成功";
@@ -192,40 +175,31 @@ router.post("/addPic", async function (ctx) {
   const token = ctx.cookies.get("token");
   const now = new Date().getTime();
   const { width, height, imgSrc, title, userId } = ctx.request.body;
+  console.log(width,height);
+  const findAccount = userJson.RECORDS.find(
+    item => item.userId === Number(userId)
+  );
   const data = {};
-
   if (token) {
-    fs.readFile("./picture.json", function (err, data) {
+    pictureJson.RECORDS.push({
+      picId: pictureJson.RECORDS[pictureJson.RECORDS.length - 1].picId + 1,
+      width: width,
+      height: height,
+      imgSrc: imgSrc,
+      title: title,
+      picState: 0,
+      isTop: 1,
+      time: now,
+      userId: userId,
+      account: findAccount.account,
+    });
+    fs.writeFile("./picture.json", JSON.stringify(pictureJson), function (err) {
       if (err) {
         return;
       }
-      let pic = data.toString();
-      pic = JSON.parse(pic);
-      pic.RECORDS.push({
-        picId: pictureJson.RECORDS.length + 1,
-        width: width,
-        height: height,
-        imgSrc: imgSrc,
-        title: title,
-        picState: 0,
-        isTop: 1,
-        time: now,
-        userId: userId,
-      });
-      let str = JSON.stringify(pic);
-      fs.writeFile("./picture.json", str, function (err) {
-        if (err) {
-          return;
-        }
-      });
-      if (str) {
-        data.stat = "ok";
-        data.message = "添加成功！";
-      } else {
-        data.stat = "fail";
-        data.message = "添加失败！";
-      }
     });
+    data.stat = "ok";
+    data.message = "添加成功！";
   } else {
     data.stat = "Token_Not_Found";
   }
@@ -236,21 +210,21 @@ router.post("/addPic", async function (ctx) {
 router.get("/getPicture", async function (ctx) {
   const token = ctx.cookies.get("token");
   const data = {};
-  pictureJson.RECORDS.sort((a, b) => a.picState - b.picState);
+  pictureJson.RECORDS.sort((a, b) => a.isTop - b.isTop);
+  pictureJson.RECORDS.sort((a, b) => b.time - a.time);
   pictureJson.RECORDS.forEach(item => {
-    const findAccount = userJson.RECORDS.find(
+    const findAccount = userJson.RECORDS.filter(
       content => content.userId === item.userId
     );
-    item.account = findAccount.account;
+    findAccount.forEach(findAcount => {
+      item.account = findAcount.account;
+    });
   });
   if (token) {
     if (pictureJson.RECORDS.length > 0) {
-      sql =
-        "select count(*) from (select  U.account,P.* from picture as P left join user as U on P.userId = U.userId) as total";
-      const total = await getData(sql);
       data.stat = "ok";
-      data.content = res;
-      data.total = total;
+      data.content = pictureJson.RECORDS;
+      data.total = pictureJson.RECORDS.length;
     } else {
       data.stat = "fail";
       data.message = "没有查询到图片！";
@@ -266,11 +240,15 @@ router.get("/getPicture", async function (ctx) {
 router.get("/getPictureByState", async function (ctx) {
   const token = ctx.cookies.get("token");
   const data = {};
-  let sql =
-    "select  U.account,P.* from picture as P left join user as U on P.userId = U.userId where P.picState = 1 order by P.isTop,time desc";
-  let res = await getData(sql);
+  const res = pictureJson.RECORDS.filter(item => item.picState === 1);
+  res.forEach(item => {
+    const findAccount = userJson.RECORDS.filter(
+      content => content.userId === item.userId
+    );
+    item.account = findAccount.account;
+  });
   if (token) {
-    if (res.length > 0) {
+    if (res) {
       data.stat = "ok";
       data.content = res;
     } else {
@@ -289,8 +267,13 @@ router.post("/deletePic", async function (ctx) {
   const token = ctx.cookies.get("token");
   const { picId } = ctx.request.body;
   const data = {};
-  const sql = 'delete from picture where picId = "' + picId + '" ';
-  const res = await getData(sql);
+  const res = pictureJson.RECORDS.find(item => item.picId === picId);
+  pictureJson.RECORDS.splice(pictureJson.RECORDS.indexOf(res), 1);
+  fs.writeFile("./picture.json", JSON.stringify(pictureJson), function (err) {
+    if (err) {
+      return;
+    }
+  });
   if (token) {
     data.stat = "ok";
     data.message = "删除成功！";
@@ -305,13 +288,8 @@ router.post("/updateCheckState", async function (ctx) {
   const token = ctx.cookies.get("token");
   const { picState, picId } = ctx.request.body;
   const data = {};
-  const sql =
-    'update picture set picState = "' +
-    picState +
-    '" where picId = "' +
-    picId +
-    '" ';
-  const res = await getData(sql);
+  const res = pictureJson.RECORDS.find(item => item.picId === picId);
+  res.picState = picState;
   if (token) {
     data.stat = "ok";
     data.message = "修改审核状态成功！";
@@ -327,15 +305,9 @@ router.post("/updateType", async function (ctx) {
   const now = new Date().getTime();
   const { isTop, picId } = ctx.request.body;
   const data = {};
-  const sql =
-    'update picture set isTop = "' +
-    isTop +
-    '" ,time = "' +
-    now +
-    '"where picId = "' +
-    picId +
-    '"';
-  const res = await getData(sql);
+  const res = pictureJson.RECORDS.find(item => item.picId === picId);
+  res.isTop = isTop;
+  res.time = now;
   if (token) {
     data.stat = "ok";
     data.message = "修改置顶状态成功！";
