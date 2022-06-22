@@ -3,6 +3,7 @@ import { Card, Table, message, Button, Popconfirm } from "antd";
 import { useHistory } from "react-router-dom";
 import "./index.css";
 import * as api from "../../services/api";
+import Sortable from 'sortablejs';
 
 function PictureManage() {
   const [dataSource, setDataSource] = useState([]); // eslint-disable-line no-unused-vars
@@ -15,9 +16,7 @@ function PictureManage() {
 
   const getPicture = async () => {
     let result = await api.getPicture();
-    console.log('ccc'+result.data.content[0].account)
     if (result.data.stat === "ok") {
-      console.log('chenchu')
       setDataSource(result.data.content);
       setTotal(result.data.total);
     } else if (result.data.stat === "Token_Not_Found") {
@@ -43,6 +42,7 @@ function PictureManage() {
     const result = await api.updateCheckState(content);
     if (result.data.stat === "ok") {
       message.success(result.data.message);
+      getPicture();
     } else if (result.data.stat === "Token_Not_Found") {
       history.replace("/login");
     } else {
@@ -66,33 +66,30 @@ function PictureManage() {
     {
       title: "图片标题",
       dataIndex: "title",
-      width: 180,
+      width: 100,
       ellipsis: true,
       align: "center",
     },
     {
       title: "图片",
       dataIndex: "imgSrc",
-      width: 150,
       align: "center",
       render: url => (
         <img
           className="manage-img"
           src={url}
-          style={{ width: "80px", height: "50px" }}
         ></img>
       ),
     },
     {
       title: "发布人",
       dataIndex: "account",
-      width: 100,
       align: "center",
     },
     {
       title: "操作",
       dataIndex: "picId",
-      width: 200,
+      width: 300,
       align: "center",
       render: picId => (
         <div>
@@ -134,28 +131,46 @@ function PictureManage() {
         </div>
       ),
     },
+    {
+      title: "拖拽",
+      align: "center",
+      render: () => (
+        <a className="drag-handle" href="#">
+          Drag
+        </a>
+      ),
+    },
   ];
 
+  const sortables = () => {
+    let tab = document.getElementsByClassName('pic-manage');
+    let el = tab[0].getElementsByClassName('ant-table-tbody')[0];
+    Sortable.create(el, {
+        animation: 100, 
+        onEnd: function (evt) { //拖拽完毕之后发生，只需关注该事件
+            const oldEl = dataSource.splice(evt.oldIndex, 1);
+            dataSource.splice(evt.newIndex, 0, oldEl[0]);
+        }
+    });
+}
+
   return (
-    <div className="pic-manage">
+    <div className="pic-manage" ref={sortables}>
       <Card size="small" style={{ width: "100%" }}>
-        <Table
-          dataSource={dataSource}
-          columns={column}
-          bordered
-          rowClassName={() => "editable-row"}
-          pagination={{
-            defaultPageSize: 10,
-            pageSize: 10,
-            total: total,
-            showQuickJumper: true,
-            showTotal: total => `共 ${total} 条`,
-          }}
-          size="small"
-          rowKey={record => {
-            return record.id;
-          }}
-        />
+          <Table
+            dataSource={dataSource}
+            columns={column}
+            bordered
+            rowClassName={() => "editable-row"}
+            pagination={{
+              defaultPageSize: 10,
+              pageSize: 10,
+              total: total,
+              showQuickJumper: true,
+              showTotal: total => `共 ${total} 条`,
+            }}
+            size="small"
+          />
       </Card>
     </div>
   );

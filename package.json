@@ -25,9 +25,11 @@
     "react": "^17.0.2",
     "react-dnd": "^16.0.1",
     "react-dom": "^17.0.2",
+    "react-drag-listview": "^0.2.1",
     "react-router-dom": "^5.3.1",
     "react-scripts": "^5.0.0",
     "request": "^2.88.2",
+    "sortablejs": "^1.15.0",
     "typescript": "^4.6.4",
     "web-vitals": "^2.1.4"
   },

@@ -66,15 +66,13 @@ router.post("/registry", async ctx => {
   const data = {};
   const res = userJson.RECORDS.find(item => item.account === account);
   if (!res) {
-    let user = data.toString();
-    user = JSON.parse(user);
-    user.RECORDS.push({
-      userId: userJson.RECORDS[userJson.RECORDS.lenght - 1].userId + 1,
+    userJson.RECORDS.push({
+      userId: userJson.RECORDS[userJson.RECORDS.length - 1].userId + 1,
       account: account,
       pwd: pwd,
       userFlag: "2",
     });
-    let str = JSON.stringify(user);
+    let str = JSON.stringify(userJson);
     fs.writeFile("./user.json", str, function (err) {
       if (err) {
         return;
@@ -175,7 +173,6 @@ router.post("/addPic", async function (ctx) {
   const token = ctx.cookies.get("token");
   const now = new Date().getTime();
   const { width, height, imgSrc, title, userId } = ctx.request.body;
-  console.log(width,height);
   const findAccount = userJson.RECORDS.find(
     item => item.userId === Number(userId)
   );
@@ -210,21 +207,22 @@ router.post("/addPic", async function (ctx) {
 router.get("/getPicture", async function (ctx) {
   const token = ctx.cookies.get("token");
   const data = {};
-  pictureJson.RECORDS.sort((a, b) => a.isTop - b.isTop);
-  pictureJson.RECORDS.sort((a, b) => b.time - a.time);
-  pictureJson.RECORDS.forEach(item => {
+  let picData = JSON.parse(JSON.stringify(pictureJson.RECORDS));
+  picData.sort((a, b) => a.isTop - b.isTop);
+  picData.sort((a, b) => b.time - a.time);
+  picData.forEach(item => {
     const findAccount = userJson.RECORDS.filter(
-      content => content.userId === item.userId
+      content => content.userId === Number(item.userId)
     );
     findAccount.forEach(findAcount => {
       item.account = findAcount.account;
     });
   });
   if (token) {
-    if (pictureJson.RECORDS.length > 0) {
+    if (picData) {
       data.stat = "ok";
-      data.content = pictureJson.RECORDS;
-      data.total = pictureJson.RECORDS.length;
+      data.content = picData;
+      data.total = picData.length;
     } else {
       data.stat = "fail";
       data.message = "没有查询到图片！";
@@ -245,7 +243,9 @@ router.get("/getPictureByState", async function (ctx) {
     const findAccount = userJson.RECORDS.filter(
       content => content.userId === item.userId
     );
-    item.account = findAccount.account;
+    findAccount.forEach(findAcount => {
+      item.account = findAcount.account;
+    });
   });
   if (token) {
     if (res) {
@@ -290,6 +290,12 @@ router.post("/updateCheckState", async function (ctx) {
   const data = {};
   const res = pictureJson.RECORDS.find(item => item.picId === picId);
   res.picState = picState;
+  pictureJson.RECORDS.splice(pictureJson.RECORDS.indexOf(res), 1, res);
+  fs.writeFile("./picture.json", JSON.stringify(pictureJson), function (err) {
+    if (err) {
+      return;
+    }
+  });
   if (token) {
     data.stat = "ok";
     data.message = "修改审核状态成功！";
@@ -308,6 +314,12 @@ router.post("/updateType", async function (ctx) {
   const res = pictureJson.RECORDS.find(item => item.picId === picId);
   res.isTop = isTop;
   res.time = now;
+  pictureJson.RECORDS.splice(pictureJson.RECORDS.indexOf(res), 1, res);
+  fs.writeFile("./picture.json", JSON.stringify(pictureJson), function (err) {
+    if (err) {
+      return;
+    }
+  });
   if (token) {
     data.stat = "ok";
     data.message = "修改置顶状态成功！";

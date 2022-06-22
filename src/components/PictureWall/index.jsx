@@ -107,7 +107,6 @@ function PcitureWall() {
     if (result.data.stat === "ok") {
       newRes = result.data.content;
     } else if (result.data.stat === "Token_Not_Found") {
-      console.log('12345dfs')
       history.replace("/login");
     }
     setDataSource([...newRes]);
@@ -161,7 +160,6 @@ function PcitureWall() {
             <img
               alt="head_portrait"
               src={item.imgSrc}
-              style={{ width: "200px" }}
             />
             <p className="card-text">{item.title}</p>
           </div>
@@ -173,7 +171,6 @@ function PcitureWall() {
             <img
               alt="head_portrait"
               src={item.imgSrc}
-              style={{ width: "200px" }}
             />
             <p className="card-text">{item.title}</p>
           </div>
@@ -185,7 +182,6 @@ function PcitureWall() {
             <img
               alt="head_portrait"
               src={item.imgSrc}
-              style={{ width: "200px" }}
             />
             <p className="card-text">{item.title}</p>
           </div>
@@ -193,11 +189,10 @@ function PcitureWall() {
       </div>
       <div className="card">
         {arr4.map(item => (
-          <div onClick={() => clickPic(item)} key={item.id}>
+          <div onClick={() => clickPic(item)} key={item.id} className="card-pic">
             <img
               alt="head_portrait"
               src={item.imgSrc}
-              style={{ width: "200px" }}
             />
             <p className="card-text">{item.title}</p>
           </div>

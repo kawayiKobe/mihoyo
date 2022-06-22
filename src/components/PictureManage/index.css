@@ -1,11 +1,14 @@
 .pic-manage {
-  width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  padding: 0 60px;
+  margin-top: 62px;
 }
 
 .manage-img {
   cursor: pointer;
   transition: all 0.6s;
+  width: 46%;
+  height: 20%;
 }
 
 .manage-img:hover {
@@ -22,4 +25,22 @@
 
 .delete {
   margin: 0px 5px;
+}
+
+.drag-handle {
+  cursor: move !important;
+}
+
+@media screen and (max-width: 600px) {
+  .pic-manage {
+    width: 100%;
+    padding: 0 20px;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .pic-manage {
+    width: 100%;
+    padding: 0 40px;
+  }
 }

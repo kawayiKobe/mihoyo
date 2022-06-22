@@ -1,9 +1,8 @@
 .upload-box {
   display: flex;
   flex-direction: column;
-  width: 1200px;
-  margin-right: auto;
-  margin-left: auto;
+  width: 100%;
+  padding: 0 30px;
   background-color: rgb(240, 242, 245);
   justify-content: space-around;
 }

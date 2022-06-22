@@ -216,7 +216,7 @@ router.post("/addPic", async function (ctx) {
     '")';
   const judge = await getData(sql);
   if (token) {
-    if (judge.length === 1) {
+    if (judge) {
       data.stat = "ok";
       data.message = "添加成功！";
     } else {
@@ -261,7 +261,7 @@ router.get("/getPictureByState", async function (ctx) {
   const token = ctx.cookies.get("token");
   const data = {};
   let sql =
-    "select  U.account,P.* from picture as P left join user as U on P.userId = U.userId where P.picState = 1 order by P.isTop,time desc";
+    "select  U.account,P.* from picture as P left join user as U on P.userId = U.userId where P.picState = 1";
   let res = await getData(sql);
   if (token) {
     if (res.length > 0) {
