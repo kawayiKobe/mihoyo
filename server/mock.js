@@ -99,7 +99,6 @@ router.post("/login", async ctx => {
   const res = userJson.RECORDS.find(
     item => item.account === account && item.pwd === pwd
   );
-  console.log(res);
   if (res) {
     data.stat = "ok";
     data.userId = res.userId;
@@ -287,10 +286,12 @@ router.post("/deletePic", async function (ctx) {
 router.post("/updateCheckState", async function (ctx) {
   const token = ctx.cookies.get("token");
   const { picState, picId } = ctx.request.body;
+  console.log(picId)
   const data = {};
   const res = pictureJson.RECORDS.find(item => item.picId === picId);
   res.picState = picState;
   pictureJson.RECORDS.splice(pictureJson.RECORDS.indexOf(res), 1, res);
+  console.log(pictureJson.RECORDS[pictureJson.RECORDS.indexOf(res)])
   fs.writeFile("./picture.json", JSON.stringify(pictureJson), function (err) {
     if (err) {
       return;
