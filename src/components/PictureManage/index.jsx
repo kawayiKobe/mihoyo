@@ -3,11 +3,12 @@ import { Card, Table, message, Button, Popconfirm } from "antd";
 import { useHistory } from "react-router-dom";
 import "./index.css";
 import * as api from "../../services/api";
-import Sortable from 'sortablejs';
+import Sortable from "sortablejs";
 
 function PictureManage() {
   const [dataSource, setDataSource] = useState([]); // eslint-disable-line no-unused-vars
   const [total, setTotal] = useState(Number);
+  const [loading, setLoading] = useState(null);
   const history = useHistory();
 
   useEffect(() => {
@@ -15,8 +16,10 @@ function PictureManage() {
   }, []);
 
   const getPicture = async () => {
+    setLoading(true);
     let result = await api.getPicture();
     if (result.data.stat === "ok") {
+      setLoading(false);
       setDataSource(result.data.content);
       setTotal(result.data.total);
     } else if (result.data.stat === "Token_Not_Found") {
@@ -74,12 +77,7 @@ function PictureManage() {
       title: "图片",
       dataIndex: "imgSrc",
       align: "center",
-      render: url => (
-        <img
-          className="manage-img"
-          src={url}
-        ></img>
-      ),
+      render: url => <img className="manage-img" src={url}></img>,
     },
     {
       title: "发布人",
@@ -143,34 +141,36 @@ function PictureManage() {
   ];
 
   const sortables = () => {
-    let tab = document.getElementsByClassName('pic-manage');
-    let el = tab[0].getElementsByClassName('ant-table-tbody')[0];
+    let tab = document.getElementsByClassName("pic-manage");
+    let el = tab[0].getElementsByClassName("ant-table-tbody")[0];
     Sortable.create(el, {
-        animation: 100, 
-        onEnd: function (evt) { //拖拽完毕之后发生，只需关注该事件
-            const oldEl = dataSource.splice(evt.oldIndex, 1);
-            dataSource.splice(evt.newIndex, 0, oldEl[0]);
-        }
+      animation: 100,
+      onEnd: function (evt) {
+        //拖拽完毕之后发生，只需关注该事件
+        const oldEl = dataSource.splice(evt.oldIndex, 1);
+        dataSource.splice(evt.newIndex, 0, oldEl[0]);
+      },
     });
-}
+  };
 
   return (
     <div className="pic-manage" ref={sortables}>
       <Card size="small" style={{ width: "100%" }}>
-          <Table
-            dataSource={dataSource}
-            columns={column}
-            bordered
-            rowClassName={() => "editable-row"}
-            pagination={{
-              defaultPageSize: 10,
-              pageSize: 10,
-              total: total,
-              showQuickJumper: true,
-              showTotal: total => `共 ${total} 条`,
-            }}
-            size="small"
-          />
+        <Table
+          dataSource={dataSource}
+          columns={column}
+          loading={loading}
+          bordered
+          rowClassName={() => "editable-row"}
+          pagination={{
+            defaultPageSize: 10,
+            pageSize: 10,
+            total: total,
+            showQuickJumper: true,
+            showTotal: total => `共 ${total} 条`,
+          }}
+          size="small"
+        />
       </Card>
     </div>
   );

@@ -89,6 +89,7 @@ function PcitureWall() {
   const [picIndex, setPicIndex] = useState(0);
   const [showPic, setShowPic] = useState("");
   const [dataSource, setDataSource] = useState([]);
+  const [loading, setLoading] = useState(true);
   const history = useHistory();
 
   useEffect(() => {
@@ -102,9 +103,11 @@ function PcitureWall() {
   }, [picIndex]);
 
   const getPictureByState = async () => {
+    setLoading(true)
     let newRes = [];
     const result = await api.getPictureByState();
     if (result.data.stat === "ok") {
+      setLoading(false)
       newRes = result.data.content;
     } else if (result.data.stat === "Token_Not_Found") {
       history.replace("/login");
@@ -154,50 +157,46 @@ function PcitureWall() {
   }
   return (
     <div className="container">
-      <div className="card">
-        {arr1.map(item => (
-          <div onClick={() => clickPic(item)} key={item.id}>
-            <img
-              alt="head_portrait"
-              src={item.imgSrc}
-            />
-            <p className="card-text">{item.title}</p>
-          </div>
-        ))}
-      </div>
-      <div className="card">
-        {arr2.map(item => (
-          <div onClick={() => clickPic(item)} key={item.id}>
-            <img
-              alt="head_portrait"
-              src={item.imgSrc}
-            />
-            <p className="card-text">{item.title}</p>
-          </div>
-        ))}
-      </div>
-      <div className="card">
-        {arr3.map(item => (
-          <div onClick={() => clickPic(item)} key={item.id}>
-            <img
-              alt="head_portrait"
-              src={item.imgSrc}
-            />
-            <p className="card-text">{item.title}</p>
-          </div>
-        ))}
-      </div>
-      <div className="card">
-        {arr4.map(item => (
-          <div onClick={() => clickPic(item)} key={item.id} className="card-pic">
-            <img
-              alt="head_portrait"
-              src={item.imgSrc}
-            />
-            <p className="card-text">{item.title}</p>
-          </div>
-        ))}
-      </div>
+      {loading ? (
+          <div className="loader">加载中...</div>
+        ) :(<><div className="card">
+          {arr1.map(item => (
+            <div onClick={() => clickPic(item)} key={item.id}>
+              <img
+                alt="head_portrait"
+                src={item.imgSrc} />
+              <p className="card-text">{item.title}</p>
+            </div>
+          ))}
+        </div><div className="card">
+            {arr2.map(item => (
+              <div onClick={() => clickPic(item)} key={item.id}>
+                <img
+                  alt="head_portrait"
+                  src={item.imgSrc} />
+                <p className="card-text">{item.title}</p>
+              </div>
+            ))}
+          </div><div className="card">
+            {arr3.map(item => (
+              <div onClick={() => clickPic(item)} key={item.id}>
+                <img
+                  alt="head_portrait"
+                  src={item.imgSrc} />
+                <p className="card-text">{item.title}</p>
+              </div>
+            ))}
+          </div><div className="card">
+            {arr4.map(item => (
+              <div onClick={() => clickPic(item)} key={item.id} className="card-pic">
+                <img
+                  alt="head_portrait"
+                  src={item.imgSrc} />
+                <p className="card-text">{item.title}</p>
+              </div>
+            ))}
+          </div></>)}
+      
       <Modal
         title="查看图片"
         align="center"

@@ -8,7 +8,8 @@
 
 ## 服务端
 1. cd /sever 进入sever文件夹
-2. node index.js 运行服务端
+2. node index.js 运行服务端（需要连接数据库）
+3. node mock.js 模拟服务端，采用json数据（不需要连接数据库）
 
 
 ## 数据库连接
