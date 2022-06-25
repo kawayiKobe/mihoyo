@@ -15,20 +15,27 @@
   transform: scale(1.4);
 }
 
-.pass {
-  margin: 0px 5px;
-}
-
-.reject {
-  margin: 0px 5px;
-}
-
-.delete {
+.operate-margin {
   margin: 0px 5px;
 }
 
 .drag-handle {
-  cursor: move !important;
+  cursor: move;
+}
+
+.show-pic {
+  display: flex;
+  justify-content: center;
+}
+
+.show-pic img {
+  width: auto;
+  overflow: hidden;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
 }
 
 @media screen and (max-width: 600px) {

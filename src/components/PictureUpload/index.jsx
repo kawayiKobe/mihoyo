@@ -31,6 +31,10 @@ function PictureUpload() {
   };
 
   const addPic = async () => {
+    if (title === '' || !localStorage.getItem("imgUrl")) {
+      message.error('标题或上传的图片不能为空！');
+      return;
+    }
     let result = await api.addPic({
       width: width,
       height: height,

@@ -1,6 +1,8 @@
 import { React, useState, useEffect } from "react";
 import { Card, Table, message, Button, Popconfirm } from "antd";
 import { useHistory } from "react-router-dom";
+import { RightOutlined, LeftOutlined } from "@ant-design/icons";
+import Modal from "antd/lib/modal/Modal";
 import "./index.css";
 import * as api from "../../services/api";
 import Sortable from "sortablejs";
@@ -9,11 +11,34 @@ function PictureManage() {
   const [dataSource, setDataSource] = useState([]); // eslint-disable-line no-unused-vars
   const [total, setTotal] = useState(Number);
   const [loading, setLoading] = useState(null);
+  const [isShowPic, setIsShowPic] = useState(false);
+  const [picIndex, setPicIndex] = useState(0);
+  const [showPic, setShowPic] = useState("");
   const history = useHistory();
 
   useEffect(() => {
     getPicture();
   }, []);
+
+  useEffect(() => {
+    if (dataSource[picIndex]) {
+      setShowPic(dataSource[picIndex].imgSrc);
+    }
+  }, [picIndex]);
+
+  function clickPic(item) {
+    setIsShowPic(true);
+    setShowPic(dataSource[picIndex].imgSrc);
+    setPicIndex(dataSource.indexOf(item));
+  }
+
+  function handleCancel() {
+    setIsShowPic(false);
+  }
+
+  function changePic(item) {
+    setPicIndex((picIndex + item + dataSource.length) % dataSource.length);
+  }
 
   const getPicture = async () => {
     setLoading(true);
@@ -77,7 +102,7 @@ function PictureManage() {
       title: "图片",
       dataIndex: "imgSrc",
       align: "center",
-      render: url => <img className="manage-img" src={url}></img>,
+      render: (item) => <img onClick={() => clickPic(item)} className="manage-img" src={item}></img>,
     },
     {
       title: "发布人",
@@ -94,7 +119,7 @@ function PictureManage() {
           <Button
             size="small"
             type="primary"
-            className="pass"
+            className="operate-margin"
             onClick={() => updateCheckState({ picState: 1, picId: picId })}
           >
             通过
@@ -102,7 +127,7 @@ function PictureManage() {
           <Button
             size="small"
             type="ghost"
-            className="reject"
+            className="operate-margin"
             onClick={() => updateCheckState({ picState: 2, picId: picId })}
           >
             拒绝
@@ -110,7 +135,7 @@ function PictureManage() {
           <Button
             size="small"
             type="ghost"
-            className="reject"
+            className="operate-margin"
             onClick={() => updateType({ isTop: 0, picId: picId })}
           >
             置顶
@@ -172,6 +197,26 @@ function PictureManage() {
           size="small"
         />
       </Card>
+      <Modal
+        title="查看图片"
+        align="center"
+        visible={isShowPic}
+        onCancel={handleCancel}
+        footer={
+          <div className="footer">
+            <Button onClick={() => changePic(-1)}>
+              <LeftOutlined />
+            </Button>
+            <Button onClick={() => changePic(1)}>
+              <RightOutlined />
+            </Button>
+          </div>
+        }
+      >
+        <div className="show-pic">
+          <img src={showPic} alt="" />
+        </div>
+      </Modal>
     </div>
   );
 }
