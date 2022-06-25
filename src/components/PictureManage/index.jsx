@@ -16,80 +16,6 @@ function PictureManage() {
   const [showPic, setShowPic] = useState("");
   const history = useHistory();
 
-  useEffect(() => {
-    getPicture();
-  }, []);
-
-  useEffect(() => {
-    if (dataSource[picIndex]) {
-      setShowPic(dataSource[picIndex].imgSrc);
-    }
-  }, [picIndex]);
-
-  function clickPic(item) {
-    setIsShowPic(true);
-    setShowPic(dataSource[picIndex].imgSrc);
-    setPicIndex(dataSource.indexOf(item));
-  }
-
-  function handleCancel() {
-    setIsShowPic(false);
-  }
-
-  function changePic(item) {
-    setPicIndex((picIndex + item + dataSource.length) % dataSource.length);
-  }
-
-  const getPicture = async () => {
-    setLoading(true);
-    let result = await api.getPicture();
-    if (result.data.stat === "ok") {
-      setLoading(false);
-      setDataSource(result.data.content);
-      setTotal(result.data.total);
-    } else if (result.data.stat === "Token_Not_Found") {
-      history.replace("/login");
-    } else {
-      message.error(result.data.message);
-    }
-  };
-
-  const deletePic = async content => {
-    const result = await api.deletePic(content);
-    if (result.data.stat === "ok") {
-      message.success(result.data.message);
-      getPicture();
-    } else if (result.data.stat === "Token_Not_Found") {
-      history.replace("/login");
-    } else {
-      message.error("删除失败！");
-    }
-  };
-
-  const updateCheckState = async content => {
-    const result = await api.updateCheckState(content);
-    if (result.data.stat === "ok") {
-      message.success(result.data.message);
-      getPicture();
-    } else if (result.data.stat === "Token_Not_Found") {
-      history.replace("/login");
-    } else {
-      message.error("修改失败！");
-    }
-  };
-
-  const updateType = async content => {
-    const result = await api.updateType(content);
-    if (result.data.stat === "ok") {
-      message.success(result.data.message);
-      getPicture();
-    } else if (result.stat === "Token_Not_Found") {
-      history.replace("/login");
-    } else {
-      message.error("修改失败！");
-    }
-  };
-
   const column = [
     {
       title: "图片标题",
@@ -100,19 +26,42 @@ function PictureManage() {
     },
     {
       title: "图片",
+      width: 180,
       dataIndex: "imgSrc",
       align: "center",
-      render: (item) => <img onClick={() => clickPic(item)} className="manage-img" src={item}></img>,
+      render: item => (
+        <img
+          onClick={() => clickPic(item)}
+          className="manage-img"
+          src={item}
+        ></img>
+      ),
+    },
+    {
+      title: "审核状态",
+      dataIndex: "picState",
+      width: 150,
+      align: "center",
+      render: item => {
+        if (item === 0) {
+          return <span>审核中</span>;
+        } else if (item === 1) {
+          return <span>审核通过</span>;
+        } else if (item === 2) {
+          return <span className="text-delete">审核未通过</span>;
+        }
+      },
     },
     {
       title: "发布人",
       dataIndex: "account",
+      width: 100,
       align: "center",
     },
     {
       title: "操作",
       dataIndex: "picId",
-      width: 300,
+      width: 270,
       align: "center",
       render: picId => (
         <div>
@@ -156,6 +105,7 @@ function PictureManage() {
     },
     {
       title: "拖拽",
+      width: 100,
       align: "center",
       render: () => (
         <a className="drag-handle" href="#">
@@ -164,6 +114,88 @@ function PictureManage() {
       ),
     },
   ];
+
+  useEffect(() => {
+    getPicture();
+  }, []);
+
+  useEffect(() => {
+    if (dataSource[picIndex]) {
+      setShowPic(dataSource[picIndex].imgSrc);
+    }
+  }, [picIndex]);
+
+  function clickPic(item) {
+    setIsShowPic(true);
+    setShowPic(item);
+    setPicIndex(dataSource.findIndex(content => content.imgSrc === item));
+    console.log(item, dataSource);
+    const res = dataSource.filter(content => content.imgSrc === item);
+    console.log(
+      dataSource.findIndex(res => res.imgSrc === item),
+      dataSource.filter(content => content.imgSrc === item)
+    );
+  }
+
+  function handleCancel() {
+    setIsShowPic(false);
+  }
+
+  function changePic(item) {
+    setPicIndex((picIndex + item + dataSource.length) % dataSource.length);
+  }
+
+  const getPicture = async () => {
+    setLoading(true);
+    let newRes = [];
+    let result = await api.getPicture();
+    if (result.data.stat === "ok") {
+      setLoading(false);
+      newRes = result.data.content;
+      setTotal(result.data.total);
+    } else if (result.data.stat === "Token_Not_Found") {
+      history.replace("/login");
+    } else {
+      message.error(result.data.message);
+    }
+    setDataSource([...newRes]);
+  };
+
+  const deletePic = async content => {
+    const result = await api.deletePic(content);
+    if (result.data.stat === "ok") {
+      message.success(result.data.message);
+      getPicture();
+    } else if (result.data.stat === "Token_Not_Found") {
+      history.replace("/login");
+    } else {
+      message.error("删除失败！");
+    }
+  };
+
+  const updateCheckState = async content => {
+    const result = await api.updateCheckState(content);
+    if (result.data.stat === "ok") {
+      message.success(result.data.message);
+      getPicture();
+    } else if (result.data.stat === "Token_Not_Found") {
+      history.replace("/login");
+    } else {
+      message.error("修改失败！");
+    }
+  };
+
+  const updateType = async content => {
+    const result = await api.updateType(content);
+    if (result.data.stat === "ok") {
+      message.success(result.data.message);
+      getPicture();
+    } else if (result.stat === "Token_Not_Found") {
+      history.replace("/login");
+    } else {
+      message.error("修改失败！");
+    }
+  };
 
   const sortables = () => {
     let tab = document.getElementsByClassName("pic-manage");
