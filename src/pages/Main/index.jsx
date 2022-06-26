@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { Form, Input, Button, message } from "antd";
 import "./index.css";
@@ -12,6 +12,7 @@ function Main() {
   const [isShowDialog, setIsShowDialog] = useState(false);
   const [oldPwd, setOldPwd] = useState("");
   const [newPwd, setNewPwd] = useState("");
+  const [num, setNum] = useState(0);
   const history = useHistory();
 
   const logout = async () => {
@@ -51,6 +52,18 @@ function Main() {
     setIsShowDialog(true);
   }
 
+  function changePic() {
+    setNum(1);
+  }
+
+  function changeUpload() {
+    setNum(2);
+  }
+
+  function changeManage() {
+    setNum(3);
+  }
+
   return (
     <>
       <div className="header">
@@ -62,18 +75,30 @@ function Main() {
             />
           </div>
           <div className="header-pic">
-            <Link className="header-img" to="/main/picture-wall">
+            <Link
+              onClick={changePic}
+              className={num === 1 ? "is-acitve header-img" : "header-img"}
+              to="/main/picture-wall"
+            >
               瀑布流
             </Link>
           </div>
           <div className="header-upload">
-            <Link className="header-img" to="/main/picture-upload">
+            <Link
+              onClick={changeUpload}
+              className={num === 2 ? "header-img is-acitve" : "header-img"}
+              to="/main/picture-upload"
+            >
               图片上传
             </Link>
           </div>
           {localStorage.getItem("userFlag") === "1" ? (
             <div className="header-manage">
-              <Link className="header-img" to="/main/picture-manage">
+              <Link
+                onClick={changeManage}
+                className={num === 3 ? "header-img is-acitve" : "header-img"}
+                to="/main/picture-manage"
+              >
                 图片管理
               </Link>
             </div>

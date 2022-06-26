@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect,useRef } from "react";
 import { Card, Table, message, Button, Popconfirm } from "antd";
 import { useHistory } from "react-router-dom";
 import { RightOutlined, LeftOutlined } from "@ant-design/icons";
@@ -129,12 +129,6 @@ function PictureManage() {
     setIsShowPic(true);
     setShowPic(item);
     setPicIndex(dataSource.findIndex(content => content.imgSrc === item));
-    console.log(item, dataSource);
-    const res = dataSource.filter(content => content.imgSrc === item);
-    console.log(
-      dataSource.findIndex(res => res.imgSrc === item),
-      dataSource.filter(content => content.imgSrc === item)
-    );
   }
 
   function handleCancel() {
@@ -206,6 +200,7 @@ function PictureManage() {
         //拖拽完毕之后发生，只需关注该事件
         const oldEl = dataSource.splice(evt.oldIndex, 1);
         dataSource.splice(evt.newIndex, 0, oldEl[0]);
+        console.log(oldEl,dataSource);
       },
     });
   };

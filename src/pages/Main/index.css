@@ -45,6 +45,11 @@
   background-color: rgba(255, 255, 255, 0.18);
   color: #fff;
 }
+.is-acitve {
+  background-color: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 16px;
+}
 
 .header-img {
   display: inline-block;
@@ -56,7 +61,6 @@
   color: #fff;
   cursor: pointer;
   position: relative;
-  font-size: 19px;
 }
 
 .header-manage {
@@ -192,19 +196,6 @@
 
   .header-logo img {
     width: 70px;
-  }
-
-  .header-img {
-    display: inline-block;
-    padding: 21px 0;
-    width: 82px;
-    height: 62px;
-    text-align: center;
-    vertical-align: top;
-    color: #fff;
-    cursor: pointer;
-    position: relative;
-    font-size: 16px;
   }
 
   .header-pic,
