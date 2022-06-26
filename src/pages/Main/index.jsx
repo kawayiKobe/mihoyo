@@ -7,12 +7,13 @@ import Modal from "antd/lib/modal/Modal";
 import { useState } from "react";
 import { ExportOutlined } from "@ant-design/icons";
 import * as api from "../../services/api";
+import Encrypt from "../../utils/encrypt"
 
 function Main() {
   const [isShowDialog, setIsShowDialog] = useState(false);
   const [oldPwd, setOldPwd] = useState("");
   const [newPwd, setNewPwd] = useState("");
-  const [num, setNum] = useState(0);
+  const [num, setNum] = useState(1);
   const history = useHistory();
 
   const logout = async () => {
@@ -31,8 +32,8 @@ function Main() {
   const updatePwd = async () => {
     const result = await api.updatePwd({
       userId: localStorage.getItem("userId"),
-      oldPwd: oldPwd,
-      newPwd: newPwd,
+      oldPwd: Encrypt(oldPwd),
+      newPwd: Encrypt(newPwd),
     });
     if (result.data.stat === "ok") {
       message.success(`修改密码成功`);

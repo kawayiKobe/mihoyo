@@ -12,6 +12,10 @@ const { ConsoleSqlOutlined } = require("@ant-design/icons");
 const pictureJson = require("./picture.json");
 const userJson = require("./user.json");
 const fs = require("fs");
+const CryptoJS = require("crypto-js");
+
+const key = CryptoJS.enc.Utf8.parse("1234123412ABCDEF"); //密钥
+const iv = CryptoJS.enc.Utf8.parse("ABCDEF1234123412"); //密钥偏移量
 
 var storage = multer.diskStorage({
   destination: path.join(__dirname, "../public/imgs"),
@@ -33,6 +37,18 @@ var storage = multer.diskStorage({
 var upload = multer({
   storage,
 });
+
+function Decrypt(word) {
+  let encryptedHexStr = CryptoJS.enc.Hex.parse(word);
+  let srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+  let decrypt = CryptoJS.AES.decrypt(srcs, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
+  let decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+  return decryptedStr.toString();
+}
 
 app.use(
   koaBody({
@@ -135,16 +151,18 @@ router.post("/logout", async ctx => {
 router.post("/updatePwd", async ctx => {
   const token = ctx.cookies.get("token");
   const { userId, oldPwd, newPwd } = ctx.request.body;
+  const oldPassword = Decrypt(oldPwd);
+  const newPassword = Decrypt(newPwd);
   const data = {};
   const res = userJson.RECORDS.find(
-    item => item.userId === Number(userId) && item.pwd === oldPwd
+    item => item.userId === Number(userId) && item.pwd === oldPassword
   );
   if (token) {
     if (!res) {
       data.stat = "errPwd";
       data.message = "原密码输入错误";
     } else {
-      res.pwd = newPwd;
+      res.pwd = newPassword;
       fs.writeFile("./user.json", JSON.stringify(userJson), function (err) {
         if (err) {
           return;

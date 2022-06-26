@@ -129,6 +129,7 @@ function PictureManage() {
     setIsShowPic(true);
     setShowPic(item);
     setPicIndex(dataSource.findIndex(content => content.imgSrc === item));
+    localStorage.setItem("userId",dataSource.find(content => content.imgSrc === item).picId);
   }
 
   function handleCancel() {
