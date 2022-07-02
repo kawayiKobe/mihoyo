@@ -74,7 +74,7 @@ router.prefix("/api");
 //注册
 router.post("/registry", async ctx => {
   const { account, pwd } = ctx.request.body;
-  const secret = "deyun"; //给定密钥
+  const secret = "debunk"; //给定密钥
   const token = jwt.sign({ account, pwd }, secret, {
     expiresIn: 60 * 60 * 2,
   });
@@ -138,11 +138,7 @@ router.post("/login", async ctx => {
 router.post("/logout", async ctx => {
   const token = ctx.cookies.get("token");
   const data = {};
-  if (token) {
-    data.stat = "ok";
-  } else {
-    data.stat = "Token_Not_Found";
-  }
+  data.stat = token ? "ok" : "Token_Not_Found";
   ctx.cookies.set("token", "");
   ctx.response.body = { data };
 });

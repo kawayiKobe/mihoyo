@@ -49,7 +49,7 @@ function PcitureWall() {
 
   dataSource.forEach(item => {
     let minIndex = getMinIndex(heightArr);
-    heightArr[minIndex] += (item.height / item.width) * 253 + 84; //进行缩放
+    heightArr[minIndex] += (item.height / item.width); //进行缩放
     if (minIndex === 0) {
       arr1.push(item);
     } else if (minIndex === 1) {

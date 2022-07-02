@@ -24,6 +24,7 @@
     "moment": "^2.29.3",
     "multer": "^1.4.4",
     "mysql": "^2.18.1",
+    "pnpm": "^7.3.0",
     "react": "^17.0.2",
     "react-dnd": "^16.0.1",
     "react-dom": "^17.0.2",
@@ -34,13 +35,16 @@
     "request": "^2.88.2",
     "sortablejs": "^1.15.0",
     "typescript": "^4.6.4",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yarn": "^1.22.19"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "nodeApi": "node ./server/index.js",
+    "nodeJson": "node ./server/mock.js"
   },
   "eslintConfig": {
     "extends": [
