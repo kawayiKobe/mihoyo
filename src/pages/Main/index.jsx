@@ -14,6 +14,9 @@ function Main() {
   const [oldPwd, setOldPwd] = useState("");
   const [newPwd, setNewPwd] = useState("");
   const [num, setNum] = useState(1);
+  const [isChangePic,setIsChangePic] = useState(true);
+  const [isChangeUpload,setIsChangeUpload] = useState(false);
+  const [isChangeManage,setIsChangeManage] = useState(false);
   const history = useHistory();
 
   const logout = async () => {
@@ -54,15 +57,21 @@ function Main() {
   }
 
   function changePic() {
-    setNum(1);
+    setIsChangePic(true);
+    setIsChangeUpload(false);
+    setIsChangeManage(false);
   }
 
   function changeUpload() {
-    setNum(2);
+    setIsChangePic(false);
+    setIsChangeUpload(true);
+    setIsChangeManage(false);
   }
 
   function changeManage() {
-    setNum(3);
+    setIsChangePic(false);
+    setIsChangeUpload(false);
+    setIsChangeManage(true);
   }
 
   return (
@@ -78,7 +87,7 @@ function Main() {
           <div className="header-pic">
             <Link
               onClick={changePic}
-              className={num === 1 ? "is-acitve header-img" : "header-img"}
+              className={isChangePic ? "is-active header-img" : "header-img"}
               to="/main/picture-wall"
             >
               瀑布流
@@ -87,7 +96,7 @@ function Main() {
           <div className="header-upload">
             <Link
               onClick={changeUpload}
-              className={num === 2 ? "header-img is-acitve" : "header-img"}
+              className={isChangeUpload ? "header-img is-active" : "header-img"}
               to="/main/picture-upload"
             >
               图片上传
@@ -97,7 +106,7 @@ function Main() {
             <div className="header-manage">
               <Link
                 onClick={changeManage}
-                className={num === 3 ? "header-img is-acitve" : "header-img"}
+                className={isChangeManage ? "header-img is-active" : "header-img"}
                 to="/main/picture-manage"
               >
                 图片管理

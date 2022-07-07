@@ -1,24 +1,23 @@
 .container {
   width: 100%;
-  padding: 0 15px;
+  padding: 0 90px;
   display: flex;
+  flex-wrap: wrap;
   margin-top: 62px;
 }
 
 .card {
   width: 25%;
-  padding: 12px;
-  margin-bottom: 30px;
+  padding: 15px;
   text-align: center;
 }
 
-.card > img {
-  margin-bottom: 12px;
-  border-radius: 100px;
+.card img {
+  width: 100%;
 }
 
-.card img {
-  width: 200px;
+.card-container {
+  border-radius: 5px;
 }
 
 .card-text {
@@ -113,30 +112,32 @@
   }
 
   .card img {
-    width: 120px;
-  }
-
-  .card > img {
-    margin-bottom: 0.75rem;
-    border-radius: 100px;
     width: 100%;
   }
 }
 
 @media screen and (min-width: 600px) {
-  .card img {
-    width: 150px;
+  .container {
+    width: 100%;
+    padding: 0 30px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 62px;
   }
-
-  .card > img {
-    margin-bottom: 0.75rem;
-    border-radius: 100px;
+  .card img {
     width: 100%;
   }
 }
 
 @media screen and (min-width: 992px) {
+  .container {
+    width: 100%;
+    padding: 0 80px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 62px;
+  }
   .card img {
-    width: 200px;
+    width: 100%;
   }
 }

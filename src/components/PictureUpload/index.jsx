@@ -11,7 +11,7 @@ function PictureUpload() {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
-  const uploadPic = async e => {
+  const uploadPic = async (e) => {
     let file = e.target.files[0];
     let param = new FormData();
     param.append("file", file);
@@ -26,7 +26,7 @@ function PictureUpload() {
       localStorage.setItem("imgUrl", res.url);
       message.success(res.message);
     } else {
-      return;
+      message.error('上传失败');
     }
   };
 
