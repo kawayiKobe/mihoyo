@@ -8,7 +8,7 @@
 
 .card {
   width: 25%;
-  padding: 15px;
+  padding: 25px;
   text-align: center;
 }
 
@@ -17,11 +17,18 @@
 }
 
 .card-container {
+  width: 100%;
+  background-color: #fff;
   border-radius: 5px;
 }
 
+.pic-box {
+  width: 100%;
+  cursor: pointer;
+}
+
 .card-text {
-  font-size: 85%;
+  font-size: 120%;
 }
 
 .show-pic {
@@ -106,8 +113,7 @@
 
   .card {
     width: 50%;
-    padding: 0.75rem;
-    margin-bottom: 2rem;
+    padding: 12px;
     text-align: center;
   }
 
@@ -124,20 +130,29 @@
     flex-wrap: wrap;
     margin-top: 62px;
   }
-  .card img {
-    width: 100%;
+  .card {
+    width: 25%;
+    padding: 12px;
+    text-align: center;
   }
 }
 
 @media screen and (min-width: 992px) {
   .container {
     width: 100%;
-    padding: 0 80px;
+    padding: 0 50px;
     display: flex;
     flex-wrap: wrap;
     margin-top: 62px;
   }
-  .card img {
+}
+
+@media screen and (min-width: 1200px) {
+  .container {
     width: 100%;
+    padding: 0 90px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 62px;
   }
 }

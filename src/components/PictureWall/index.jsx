@@ -25,9 +25,7 @@ function PictureWall() {
     if (dataSource.length > 0) {
       setShowPic(dataSource[picIndex].imgSrc);
     }
-
   }, [picIndex]);
-
 
   const getPictureByState = async () => {
     setLoading(true);
@@ -51,18 +49,17 @@ function PictureWall() {
 
   dataSource.forEach(item => {
     let minIndex = getMinIndex(heightArr);
-    heightArr[minIndex] += ( item.height / item.width); //进行缩放
+    heightArr[minIndex] += item.height / item.width; //进行缩放
     if (minIndex === 0) {
       arr1.push(item);
     } else if (minIndex === 1) {
       arr2.push(item);
     } else if (minIndex === 2) {
       arr3.push(item);
-    } else if(minIndex === 3){
+    } else if (minIndex === 3) {
       arr4.push(item);
     }
   });
-
 
   //点击图片显示图层
   function clickPic(item) {
@@ -88,36 +85,40 @@ function PictureWall() {
         <>
           <div className="card">
             {arr1.map(item => (
-              <div onClick={() => clickPic(item)} key={item.id} className='card-container'>
-                <img alt="head-portrait" src={item.imgSrc} />
+              <div key={item.id} className="card-container">
+                <div className="pic-box" onClick={() => clickPic(item)}>
+                  <img src={item.imgSrc} />
+                </div>
                 <p className="card-text">{item.title}</p>
               </div>
             ))}
           </div>
           <div className="card">
             {arr2.map(item => (
-              <div onClick={() => clickPic(item)} key={item.id} className='card-container'>
-                <img alt="head-portrait" src={item.imgSrc} />
+              <div key={item.id} className="card-container">
+                <div className="pic-box" onClick={() => clickPic(item)}>
+                  <img src={item.imgSrc} />
+                </div>
                 <p className="card-text">{item.title}</p>
               </div>
             ))}
           </div>
           <div className="card">
             {arr3.map(item => (
-              <div onClick={() => clickPic(item)} key={item.id} className='card-container'>
-                <img alt="head-portrait" src={item.imgSrc} />
+              <div key={item.id} className="card-container">
+                <div className="pic-box" onClick={() => clickPic(item)}>
+                  <img src={item.imgSrc} />
+                </div>
                 <p className="card-text">{item.title}</p>
               </div>
             ))}
           </div>
           <div className="card">
             {arr4.map(item => (
-              <div
-                onClick={() => clickPic(item)}
-                key={item.id}
-                className="card-container"
-              >
-                <img alt="head-portrait" src={item.imgSrc} />
+              <div key={item.id} className="card-container">
+                <div className="pic-box" onClick={() => clickPic(item)}>
+                  <img src={item.imgSrc} />
+                </div>
                 <p className="card-text">{item.title}</p>
               </div>
             ))}
